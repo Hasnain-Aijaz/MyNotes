@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import com.notes.notesapp.entity.User;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDateTime;
+
 import static org.springframework.http.HttpStatus.CONFLICT;
 
 @Service
@@ -31,6 +33,8 @@ public class AuthService {
         user.setEmail(request.getEmail());
         user.setPasswordHash(hashedPassword);
         user.setUsername(request.getUsername());
+        user.setCreatedAt(LocalDateTime.now());
+
         userRepository.save(user);
     }
 }
