@@ -1,5 +1,6 @@
 package com.notes.notesapp.service;
 
+import com.notes.notesapp.dto.Login;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.notes.notesapp.dto.RegisterRequest;
@@ -9,6 +10,7 @@ import com.notes.notesapp.entity.User;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import static org.springframework.http.HttpStatus.CONFLICT;
 
@@ -36,5 +38,18 @@ public class AuthService {
         user.setCreatedAt(LocalDateTime.now());
 
         userRepository.save(user);
+    }
+
+    public String login(Login login) {
+        Optional<User> userExists = userRepository.findByEmail(login.getEmail());
+        if (userExists.isEmpty()) {
+            return "User does not exist";
+        }
+        User user = userExists.get();
+        if(!passwordEncoder.matches(login.getPassword(), user.getPasswordHash())) {
+            return "Wrong credentials";
+        }
+
+        return "Login successful";
     }
 }
